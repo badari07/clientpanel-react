@@ -80418,11 +80418,10 @@ var rrfConfig = {
 }; // Init firebase instance
 
 _app.default.initializeApp(firebaseConfig); // Init firestore
+// firebase.firestore();
 
 
-_app.default.firestore(); // const settings = { timestampsInSnapshots: true };
-// firestore.settings(settings);
-
+_app.default.firestore();
 
 var rootReducer = (0, _redux.combineReducers)({
   firebase: _reactReduxFirebase.firebaseReducer,
@@ -80606,6 +80605,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 // import { useSelector } from "react-redux";
 // import { useFirestoreConnect } from "react-redux-firebase";
 var Clients = /*#__PURE__*/function (_Component) {
@@ -80614,15 +80615,28 @@ var Clients = /*#__PURE__*/function (_Component) {
   var _super = _createSuper(Clients);
 
   function Clients() {
+    var _this;
+
     _classCallCheck(this, Clients);
 
-    return _super.apply(this, arguments);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      totalOwed: null
+    });
+
+    return _this;
   }
 
   _createClass(Clients, [{
     key: "render",
     value: function render() {
       var clients = this.props.clients;
+      var totalOwed = this.state.totalOwed;
 
       if (clients) {
         return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
@@ -80635,9 +80649,9 @@ var Clients = /*#__PURE__*/function (_Component) {
           className: "col-md-6"
         }, /*#__PURE__*/_react.default.createElement("h5", {
           className: "text-right text-secondary"
-        }, /*#__PURE__*/_react.default.createElement("span", {
+        }, "Total Owed", " ", /*#__PURE__*/_react.default.createElement("span", {
           className: "text-primary"
-        })))), /*#__PURE__*/_react.default.createElement("table", {
+        }, "$", parseFloat(totalOwed).toFixed(2))))), /*#__PURE__*/_react.default.createElement("table", {
           className: "table table-striped"
         }, /*#__PURE__*/_react.default.createElement("thead", {
           className: "thead-inverse"
@@ -80654,6 +80668,22 @@ var Clients = /*#__PURE__*/function (_Component) {
       } else {
         return /*#__PURE__*/_react.default.createElement(_Spinner.default, null);
       }
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(_ref) {
+      var clients = _ref.clients;
+
+      if (clients) {
+        var total = clients.reduce(function (total, client) {
+          return total + parseInt(client.balance.toString());
+        }, 0);
+        return {
+          totalOwed: total
+        };
+      }
+
+      return null;
     }
   }]);
 
@@ -80727,7 +80757,207 @@ function DashBoard() {
     className: "col-md-2"
   }, /*#__PURE__*/_react.default.createElement(_SideBar.default, null)));
 }
-},{"react":"../node_modules/react/index.js","../clients/Clients":"components/clients/Clients.js","./SideBar":"components/layout/SideBar.js"}],"components/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../clients/Clients":"components/clients/Clients.js","./SideBar":"components/layout/SideBar.js"}],"components/clients/AddClient.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _router = require("@reach/router");
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _redux = require("redux");
+
+var _reactRedux = require("react-redux");
+
+var _reactReduxFirebase = require("react-redux-firebase");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _createSuper(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AddClient = /*#__PURE__*/function (_Component) {
+  _inherits(AddClient, _Component);
+
+  var _super = _createSuper(AddClient);
+
+  function AddClient() {
+    var _this;
+
+    _classCallCheck(this, AddClient);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      balance: ""
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onSubmit", function (e) {
+      e.preventDefault();
+      var newClient = _this.state;
+      var _this$props = _this.props,
+          firestore = _this$props.firestore,
+          history = _this$props.history; // If no balance, make 0
+
+      if (newClient.balance === "") {
+        newClient.balance = 0;
+      }
+
+      firestore.add({
+        collection: "clients"
+      }, newClient).then(function () {
+        return history.push("/");
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (e) {
+      return _this.setState(_defineProperty({}, e.target.name, e.target.value));
+    });
+
+    return _this;
+  }
+
+  _createClass(AddClient, [{
+    key: "render",
+    value: function render() {
+      //const { disableBalanceOnAdd } = this.props.settings;
+      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+        className: "row"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "col-md-6"
+      }, /*#__PURE__*/_react.default.createElement(_router.Link, {
+        to: "/",
+        className: "btn btn-link"
+      }, /*#__PURE__*/_react.default.createElement("i", {
+        className: "fas fa-arrow-circle-left"
+      }), " Back To Dashboard"))), /*#__PURE__*/_react.default.createElement("div", {
+        className: "card"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "card-header"
+      }, "Add Client"), /*#__PURE__*/_react.default.createElement("div", {
+        className: "card-body"
+      }, /*#__PURE__*/_react.default.createElement("form", {
+        onSubmit: this.onSubmit
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "firstName"
+      }, "First Name"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "firstName",
+        minLength: "2",
+        required: true,
+        onChange: this.onChange,
+        value: this.state.firstName
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "lastName"
+      }, "Last Name"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "lastName",
+        minLength: "2",
+        required: true,
+        onChange: this.onChange,
+        value: this.state.lastName
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "email"
+      }, "Email"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "email",
+        className: "form-control",
+        name: "email",
+        onChange: this.onChange,
+        value: this.state.email
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "phone"
+      }, "Phone"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "phone",
+        minLength: "10",
+        required: true,
+        onChange: this.onChange,
+        value: this.state.phone
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "balance"
+      }, "Balance"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "balance",
+        onChange: this.onChange,
+        value: this.state.balance // disabled={disableBalanceOnAdd}
+
+      })), /*#__PURE__*/_react.default.createElement("input", {
+        type: "submit",
+        value: "Submit",
+        className: "btn btn-primary btn-block"
+      })))));
+    }
+  }]);
+
+  return AddClient;
+}(_react.Component);
+
+AddClient.propTypes = {
+  firestore: _propTypes.default.object.isRequired //settings: PropTypes.object.isRequired,
+
+};
+
+var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(), (0, _reactRedux.connect)(function (state, props) {
+  return {
+    settings: state.settings
+  };
+}))(AddClient);
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js"}],"components/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -80746,6 +80976,8 @@ var _AppNavBar = _interopRequireDefault(require("./layout/AppNavBar"));
 
 var _DashBoard = _interopRequireDefault(require("./layout/DashBoard"));
 
+var _AddClient = _interopRequireDefault(require("./clients/AddClient"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
@@ -80757,11 +80989,13 @@ var App = function App() {
     className: "container"
   }, /*#__PURE__*/_react.default.createElement(_router.Router, null, /*#__PURE__*/_react.default.createElement(_DashBoard.default, {
     path: "/"
+  }), /*#__PURE__*/_react.default.createElement(_AddClient.default, {
+    path: "/client/add"
   }))))));
 };
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(App, null), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js","./clients/AddClient":"components/clients/AddClient.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -80789,7 +81023,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53697" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54406" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

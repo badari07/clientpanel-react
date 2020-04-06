@@ -23,9 +23,8 @@ const rrfConfig = {
 // Init firebase instance
 firebase.initializeApp(firebaseConfig);
 // Init firestore
+// firebase.firestore();
 firebase.firestore();
-// const settings = { timestampsInSnapshots: true };
-// firestore.settings(settings);
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,

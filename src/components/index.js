@@ -7,6 +7,7 @@ import { store } from "../store";
 import { rrfProps } from "../store";
 import AppNavBar from "./layout/AppNavBar";
 import DashBoard from "./layout/DashBoard";
+import AddClient from "./clients/AddClient";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <div className="container">
             <Router>
               <DashBoard path="/" />
+              <AddClient path="/client/add" />
             </Router>
           </div>
         </div>
