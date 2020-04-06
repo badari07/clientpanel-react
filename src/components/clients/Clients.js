@@ -1,78 +1,88 @@
 import React, { Component } from "react";
 import { Link } from "@reach/router";
+import PropTypes from "prop-types";
+
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import Spinner from "../layout/Spinner";
+// import { useSelector } from "react-redux";
+// import { useFirestoreConnect } from "react-redux-firebase";
 
 class Clients extends Component {
   render() {
-    const clients = [
-      {
-        id: "222323",
-        firstName: "kevin",
-        lastName: "jonson",
-        email: "kevin@gmail.com",
-        phone: "555-555-55",
-        balance: "30",
-      },
-      {
-        id: "454545",
-        firstName: "bad",
-        lastName: "naraya",
-        email: "bad@gmail.com",
-        phone: "877-555-55",
-        balance: "90",
-      },
-    ];
-    return (
-      <div>
-        <div className="row">
-          <div className="col-md-6">
-            <h2>
-              {" "}
-              <i className="fas fa-users" /> Clients{" "}
-            </h2>
+    const { clients } = this.props;
+    if (clients) {
+      return (
+        <div>
+          <div className="row">
+            <div className="col-md-6">
+              <h2>
+                {" "}
+                <i className="fas fa-users" /> Clients{" "}
+              </h2>
+            </div>
+            <div className="col-md-6">
+              <h5 className="text-right text-secondary">
+                {/* Total Owed{" "} */}
+                <span className="text-primary">
+                  {/* ${parseFloat(totalOwed).toFixed(2)} */}
+                </span>
+              </h5>
+            </div>
           </div>
-          <div className="col-md-6">
-            <h5 className="text-right text-secondary">
-              {/* Total Owed{" "} */}
-              <span className="text-primary">
-                {/* ${parseFloat(totalOwed).toFixed(2)} */}
-              </span>
-            </h5>
-          </div>
-        </div>
 
-        <table className="table table-striped">
-          <thead className="thead-inverse">
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Balance</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr key={client.id}>
-                <td>
-                  {client.firstName} {client.lastName}
-                </td>
-                <td>{client.email}</td>
-                {/* <td>${parseFloat(client.balance).toFixed(2)}</td> */}
-                <td>{client.balance}</td>
-                <td>
-                  <Link
-                    to={`/client/${client.id}`}
-                    className="btn btn-secondary btn-sm"
-                  >
-                    <i className="fas fa-arrow-circle-right" /> Details
-                  </Link>
-                </td>
+          <table className="table table-striped">
+            <thead className="thead-inverse">
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Balance</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+            </thead>
+            <tbody>
+              {clients.map((client) => (
+                <tr key={client.id}>
+                  <td>
+                    {client.firstName} {client.lastName}
+                  </td>
+                  <td>{client.email}</td>
+                  <td>${parseFloat(client.balance).toFixed(2)}</td>
+                  <td>
+                    <Link
+                      to={`/client/${client.id}`}
+                      className="btn btn-secondary btn-sm"
+                    >
+                      <i className="fas fa-arrow-circle-right" /> Details
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    } else {
+      return <Spinner />;
+    }
   }
 }
 
-export default Clients;
+Clients.propTypes = {
+  firestore: PropTypes.object.isRequired,
+  clients: PropTypes.array,
+};
+export default compose(
+  firestoreConnect([{ collection: "clients" }]),
+  connect((state, props) => ({
+    clients: state.firestore.ordered.clients,
+  }))
+)(Clients);
+
+// export default Clients = () => {
+//   useFirestoreConnect([
+//     { collection: "clients" }, // or 'todos'
+//   ]);
+//   const todos = useSelector((state) => state.firestore.ordered.clients);
+// };
