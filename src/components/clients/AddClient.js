@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, navigate } from "@reach/router";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -19,7 +19,7 @@ class AddClient extends Component {
 
     const newClient = this.state;
 
-    const { firestore } = this.props;
+    const { firestore, history } = this.props;
 
     // If no balance, make 0
     if (newClient.balance === "") {
@@ -28,7 +28,7 @@ class AddClient extends Component {
 
     firestore
       .add({ collection: "clients" }, newClient)
-      .then(() => navigate("/"));
+      .then(() => history.push("/"));
   };
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });

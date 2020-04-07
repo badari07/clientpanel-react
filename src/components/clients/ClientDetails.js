@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, navigate } from "@reach/router";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -30,11 +30,11 @@ class ClientDetails extends Component {
 
   //Delete client
   onDeleteClick = () => {
-    const { client, firestore } = this.props;
+    const { client, firestore, history } = this.props;
 
     firestore
       .delete({ collection: "clients", doc: client.id })
-      .then(() => navigate("/"));
+      .then(history.push("/"));
   };
 
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -61,7 +61,6 @@ class ClientDetails extends Component {
                 type="submit"
                 value="Update"
                 className="btn btn-outline-dark"
-                pattern="[0-9]"
               />
             </div>
           </div>
@@ -124,8 +123,8 @@ class ClientDetails extends Component {
                           })
                         }
                       >
-                        {/* <i className="fas fa-pencil-alt" /> */}
-                        up li
+                        <i className="fas fa-pencil-alt" />
+                        Edit
                       </a>
                     </small>
                   </h3>
@@ -161,7 +160,8 @@ export default compose(
     {
       collection: "clients",
       storeAs: "client",
-      doc: props.id,
+      // doc: props.id,
+      doc: props.match.params.id,
     },
   ]),
   connect(({ firestore: { ordered } }, props) => ({
