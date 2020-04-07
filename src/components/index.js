@@ -12,6 +12,7 @@ import AddClient from "./clients/AddClient";
 import ClientDetails from "./clients/ClientDetails";
 import EditClient from "./clients/EditClient";
 import Login from "./auth/Login";
+import Register from "./auth/Register";
 import Settings from "./settings/Settings";
 
 const App = () => {
@@ -48,11 +49,11 @@ const App = () => {
                   path="/login"
                   component={UserIsNotAuthenticated(Login)}
                 />
-                {/* <Route
+                <Route
                   exact
                   path="/register"
                   component={UserIsNotAuthenticated(Register)}
-                /> */}
+                />
                 <Route
                   exact
                   path="/settings"

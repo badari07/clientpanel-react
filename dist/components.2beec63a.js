@@ -84197,6 +84197,7 @@ var AppNavBar = /*#__PURE__*/function (_Component) {
     value: function render() {
       var isAuthenticated = this.state.isAuthenticated;
       var auth = this.props.auth;
+      var allowRegistration = this.props.settings.allowRegistration;
       return /*#__PURE__*/_react.default.createElement("nav", {
         className: "navbar navbar-expand-md navbar-dark bg-primary mb-4"
       }, /*#__PURE__*/_react.default.createElement("div", {
@@ -84239,7 +84240,19 @@ var AppNavBar = /*#__PURE__*/function (_Component) {
         href: "#!",
         className: "nav-link",
         onClick: this.onLogoutClick
-      }, "Logout"))) : null)));
+      }, "Logout"))) : null, allowRegistration && !isAuthenticated ? /*#__PURE__*/_react.default.createElement("ul", {
+        className: "navbar-nav ml-auto"
+      }, /*#__PURE__*/_react.default.createElement("li", {
+        className: "nav-item"
+      }, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
+        to: "/login",
+        className: "nav-link"
+      }, "Login")), /*#__PURE__*/_react.default.createElement("li", {
+        className: "nav-item"
+      }, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
+        to: "/register",
+        className: "nav-link"
+      }, "Register"))) : null)));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -85391,6 +85404,186 @@ var _default = (0, _redux.compose)((0, _reactReduxFirebase.firebaseConnect)(), (
 }))(Login);
 
 exports.default = _default;
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../../actionCreaters/notifyuser":"actionCreaters/notifyuser.js","../layout/Alert":"components/layout/Alert.js"}],"components/auth/Register.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _redux = require("redux");
+
+var _reactRedux = require("react-redux");
+
+var _reactReduxFirebase = require("react-redux-firebase");
+
+var _notifyuser = _interopRequireDefault(require("../../actionCreaters/notifyuser"));
+
+var _Alert = _interopRequireDefault(require("../layout/Alert"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _createSuper(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Login = /*#__PURE__*/function (_Component) {
+  _inherits(Login, _Component);
+
+  var _super = _createSuper(Login);
+
+  function Login() {
+    var _this;
+
+    _classCallCheck(this, Login);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      email: "",
+      password: ""
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onSubmit", function (e) {
+      e.preventDefault();
+      var _this$props = _this.props,
+          firebase = _this$props.firebase,
+          notifyUser = _this$props.notifyUser;
+      var _this$state = _this.state,
+          email = _this$state.email,
+          password = _this$state.password; // Register with firebase
+
+      firebase.createUser({
+        email: email,
+        password: password
+      }).catch(function (err) {
+        return notifyUser("That User Already Exists", "error");
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (e) {
+      return _this.setState(_defineProperty({}, e.target.name, e.target.value));
+    });
+
+    return _this;
+  }
+
+  _createClass(Login, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      var allowRegistration = this.props.settings.allowRegistration;
+
+      if (!allowRegistration) {
+        this.props.history.push("/");
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props$notify = this.props.notify,
+          message = _this$props$notify.message,
+          messageType = _this$props$notify.messageType;
+      return /*#__PURE__*/_react.default.createElement("div", {
+        className: "row"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "col-md-6 mx-auto"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "card"
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "card-body"
+      }, message ? /*#__PURE__*/_react.default.createElement(_Alert.default, {
+        message: message,
+        messageType: messageType
+      }) : null, /*#__PURE__*/_react.default.createElement("h1", {
+        className: "text-center pb-4 pt-3"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "text-primary"
+      }, /*#__PURE__*/_react.default.createElement("i", {
+        className: "fas fa-lock"
+      }), " Register")), /*#__PURE__*/_react.default.createElement("form", {
+        onSubmit: this.onSubmit
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "email"
+      }, "Email"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "email",
+        required: true,
+        value: this.state.email,
+        onChange: this.onChange
+      })), /*#__PURE__*/_react.default.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/_react.default.createElement("label", {
+        htmlFor: "password"
+      }, "Password"), /*#__PURE__*/_react.default.createElement("input", {
+        type: "password",
+        className: "form-control",
+        name: "password",
+        required: true,
+        value: this.state.password,
+        onChange: this.onChange
+      })), /*#__PURE__*/_react.default.createElement("input", {
+        type: "submit",
+        value: "Register",
+        className: "btn btn-primary btn-block"
+      }))))));
+    }
+  }]);
+
+  return Login;
+}(_react.Component);
+
+Login.propTypes = {
+  firebase: _propTypes.default.object.isRequired,
+  notify: _propTypes.default.object.isRequired,
+  notifyUser: _propTypes.default.func.isRequired
+};
+
+var _default = (0, _redux.compose)((0, _reactReduxFirebase.firebaseConnect)(), (0, _reactRedux.connect)(function (state, props) {
+  return {
+    notify: state.notify,
+    settings: state.settings
+  };
+}, {
+  notifyUser: _notifyuser.default
+}))(Login);
+
+exports.default = _default;
 },{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../../actionCreaters/notifyuser":"actionCreaters/notifyuser.js","../layout/Alert":"components/layout/Alert.js"}],"actionCreaters/allowReg.js":[function(require,module,exports) {
 "use strict";
 
@@ -85638,6 +85831,8 @@ var _EditClient = _interopRequireDefault(require("./clients/EditClient"));
 
 var _Login = _interopRequireDefault(require("./auth/Login"));
 
+var _Register = _interopRequireDefault(require("./auth/Register"));
+
 var _Settings = _interopRequireDefault(require("./settings/Settings"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -85671,13 +85866,17 @@ var App = function App() {
     component: (0, _auth.UserIsNotAuthenticated)(_Login.default)
   }), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     exact: true,
+    path: "/register",
+    component: (0, _auth.UserIsNotAuthenticated)(_Register.default)
+  }), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
+    exact: true,
     path: "/settings",
     component: (0, _auth.UserIsAuthenticated)(_Settings.default)
   })))))));
 };
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(App, null), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../helper/auth":"helper/auth.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js","./clients/AddClient":"components/clients/AddClient.js","./clients/ClientDetails":"components/clients/ClientDetails.js","./clients/EditClient":"components/clients/EditClient.js","./auth/Login":"components/auth/Login.js","./settings/Settings":"components/settings/Settings.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../helper/auth":"helper/auth.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js","./clients/AddClient":"components/clients/AddClient.js","./clients/ClientDetails":"components/clients/ClientDetails.js","./clients/EditClient":"components/clients/EditClient.js","./auth/Login":"components/auth/Login.js","./auth/Register":"components/auth/Register.js","./settings/Settings":"components/settings/Settings.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
