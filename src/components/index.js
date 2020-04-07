@@ -8,6 +8,7 @@ import { rrfProps } from "../store";
 import AppNavBar from "./layout/AppNavBar";
 import DashBoard from "./layout/DashBoard";
 import AddClient from "./clients/AddClient";
+import ClientDetails from "./clients/ClientDetails";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             <Router>
               <DashBoard path="/" />
               <AddClient path="/client/add" />
+              <ClientDetails path="/client/:id" />
             </Router>
           </div>
         </div>

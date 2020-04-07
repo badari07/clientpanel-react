@@ -80834,9 +80834,7 @@ var AddClient = /*#__PURE__*/function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "onSubmit", function (e) {
       e.preventDefault();
       var newClient = _this.state;
-      var _this$props = _this.props,
-          firestore = _this$props.firestore,
-          history = _this$props.history; // If no balance, make 0
+      var firestore = _this.props.firestore; // If no balance, make 0
 
       if (newClient.balance === "") {
         newClient.balance = 0;
@@ -80845,7 +80843,7 @@ var AddClient = /*#__PURE__*/function (_Component) {
       firestore.add({
         collection: "clients"
       }, newClient).then(function () {
-        return history.push("/");
+        return (0, _router.navigate)("/");
       });
     });
 
@@ -80950,14 +80948,292 @@ AddClient.propTypes = {
 
 };
 
-var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(), (0, _reactRedux.connect)(function (state, props) {
-  return {
-    settings: state.settings
-  };
-}))(AddClient);
+var _default = (0, _reactReduxFirebase.firestoreConnect)()(AddClient);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js"}],"components/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
+var define;
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+		// register as 'classnames', consistent with npm package name
+		define('classnames', [], function () {
+			return classNames;
+		});
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+},{}],"components/clients/ClientDetails.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _router = require("@reach/router");
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _redux = require("redux");
+
+var _reactRedux = require("react-redux");
+
+var _reactReduxFirebase = require("react-redux-firebase");
+
+var _Spinner = _interopRequireDefault(require("../layout/Spinner"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _createSuper(Derived) { return function () { var Super = _getPrototypeOf(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var ClientDetails = /*#__PURE__*/function (_Component) {
+  _inherits(ClientDetails, _Component);
+
+  var _super = _createSuper(ClientDetails);
+
+  function ClientDetails() {
+    var _this;
+
+    _classCallCheck(this, ClientDetails);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "state", {
+      showBalanceUpdate: false,
+      balanceUpdateAmount: ""
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "balanceSubmit", function (e) {
+      e.preventDefault();
+      var _this$props = _this.props,
+          client = _this$props.client,
+          firestore = _this$props.firestore;
+      var balanceUpdateAmount = _this.state.balanceUpdateAmount;
+      var clientUpdate = {
+        balance: parseFloat(balanceUpdateAmount)
+      }; // Update in firestore
+
+      firestore.update({
+        collection: "clients",
+        doc: client.id
+      }, clientUpdate);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onDeleteClick", function () {
+      var _this$props2 = _this.props,
+          client = _this$props2.client,
+          firestore = _this$props2.firestore;
+      firestore.delete({
+        collection: "clients",
+        doc: client.id
+      }).then(function () {
+        return (0, _router.navigate)("/");
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChange", function (e) {
+      return _this.setState(_defineProperty({}, e.target.name, e.target.value));
+    });
+
+    return _this;
+  }
+
+  _createClass(ClientDetails, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var client = this.props.client;
+      var _this$state = this.state,
+          showBalanceUpdate = _this$state.showBalanceUpdate,
+          balanceUpdateAmount = _this$state.balanceUpdateAmount;
+      var balanceForm = ""; // If balance form should display
+
+      if (showBalanceUpdate) {
+        balanceForm = /*#__PURE__*/_react.default.createElement("form", {
+          onSubmit: this.balanceSubmit
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "input-group"
+        }, /*#__PURE__*/_react.default.createElement("input", {
+          type: "text",
+          className: "form-control",
+          name: "balanceUpdateAmount",
+          placeholder: "Add New Balance",
+          value: balanceUpdateAmount,
+          onChange: this.onChange
+        }), /*#__PURE__*/_react.default.createElement("div", {
+          className: "input-group-append"
+        }, /*#__PURE__*/_react.default.createElement("input", {
+          type: "submit",
+          value: "Update",
+          className: "btn btn-outline-dark",
+          pattern: "[0-9]"
+        }))));
+      } else {
+        balanceForm = null;
+      }
+
+      if (client) {
+        return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+          className: "row"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "col-md-6"
+        }, /*#__PURE__*/_react.default.createElement(_router.Link, {
+          to: "/",
+          className: "btn btn-link"
+        }, /*#__PURE__*/_react.default.createElement("i", {
+          className: "fas fa-arrow-circle-left"
+        }), " Back To Dashboard")), /*#__PURE__*/_react.default.createElement("div", {
+          className: "col-md-6"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "btn-group float-right"
+        }, /*#__PURE__*/_react.default.createElement(_router.Link, {
+          to: "/client/edit/".concat(client.id),
+          className: "btn btn-dark"
+        }, "Edit"), /*#__PURE__*/_react.default.createElement("button", {
+          onClick: this.onDeleteClick,
+          className: "btn btn-danger"
+        }, "Delete")))), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("div", {
+          className: "card"
+        }, /*#__PURE__*/_react.default.createElement("h3", {
+          className: "card-header"
+        }, client.firstName, " ", client.lastName), /*#__PURE__*/_react.default.createElement("div", {
+          className: "card-body"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "row"
+        }, /*#__PURE__*/_react.default.createElement("div", {
+          className: "col-md-8 col-sm-6"
+        }, /*#__PURE__*/_react.default.createElement("h4", null, "Client ID:", " ", /*#__PURE__*/_react.default.createElement("span", {
+          className: "text-secondary"
+        }, client.id))), /*#__PURE__*/_react.default.createElement("div", {
+          className: "col-md-4 col-sm-6"
+        }, /*#__PURE__*/_react.default.createElement("h3", {
+          className: "pull-right"
+        }, "Balance:", " ", /*#__PURE__*/_react.default.createElement("span", {
+          className: (0, _classnames.default)({
+            "text-danger": client.balance > 0,
+            "text-success": client.balance == 0
+          })
+        }, "$", parseFloat(client.balance).toFixed(2)), " ", /*#__PURE__*/_react.default.createElement("small", null, /*#__PURE__*/_react.default.createElement("a", {
+          href: "#!",
+          onClick: function onClick() {
+            return _this2.setState({
+              showBalanceUpdate: !_this2.state.showBalanceUpdate
+            });
+          }
+        }, "up li"))), balanceForm)), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("ul", {
+          className: "list-group"
+        }, /*#__PURE__*/_react.default.createElement("li", {
+          className: "list-group-item"
+        }, "Contact Email: ", client.email), /*#__PURE__*/_react.default.createElement("li", {
+          className: "list-group-item"
+        }, "Contact Phone: ", client.phone)))));
+      } else {
+        return /*#__PURE__*/_react.default.createElement(_Spinner.default, null);
+      }
+    }
+  }]);
+
+  return ClientDetails;
+}(_react.Component);
+
+ClientDetails.propTypes = {
+  firestore: _propTypes.default.object.isRequired
+};
+
+var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(function (props) {
+  return [{
+    collection: "clients",
+    storeAs: "client",
+    doc: props.id
+  }];
+}), (0, _reactRedux.connect)(function (_ref, props) {
+  var ordered = _ref.firestore.ordered;
+  return {
+    client: ordered.client && ordered.client[0]
+  };
+}))(ClientDetails);
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../layout/Spinner":"components/layout/Spinner.js","classnames":"../node_modules/classnames/index.js"}],"components/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -80978,6 +81254,8 @@ var _DashBoard = _interopRequireDefault(require("./layout/DashBoard"));
 
 var _AddClient = _interopRequireDefault(require("./clients/AddClient"));
 
+var _ClientDetails = _interopRequireDefault(require("./clients/ClientDetails"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
@@ -80991,11 +81269,13 @@ var App = function App() {
     path: "/"
   }), /*#__PURE__*/_react.default.createElement(_AddClient.default, {
     path: "/client/add"
+  }), /*#__PURE__*/_react.default.createElement(_ClientDetails.default, {
+    path: "/client/:id"
   }))))));
 };
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(App, null), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js","./clients/AddClient":"components/clients/AddClient.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../store":"store.js","./layout/AppNavBar":"components/layout/AppNavBar.js","./layout/DashBoard":"components/layout/DashBoard.js","./clients/AddClient":"components/clients/AddClient.js","./clients/ClientDetails":"components/clients/ClientDetails.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -81023,7 +81303,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54406" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61882" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
