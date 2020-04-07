@@ -12,6 +12,7 @@ import AddClient from "./clients/AddClient";
 import ClientDetails from "./clients/ClientDetails";
 import EditClient from "./clients/EditClient";
 import Login from "./auth/Login";
+import Settings from "./settings/Settings";
 
 const App = () => {
   return (
@@ -51,12 +52,12 @@ const App = () => {
                   exact
                   path="/register"
                   component={UserIsNotAuthenticated(Register)}
-                />
+                /> */}
                 <Route
                   exact
                   path="/settings"
                   component={UserIsAuthenticated(Settings)}
-                /> */}
+                />
               </Switch>
             </div>
           </div>
