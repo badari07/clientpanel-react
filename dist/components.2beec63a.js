@@ -83968,7 +83968,36 @@ var _default = {
   CALL_FIRESTORE: _middleware.CALL_FIRESTORE
 };
 exports.default = _default;
-},{"./enhancer":"../node_modules/redux-firestore/es/enhancer.js","./reducer":"../node_modules/redux-firestore/es/reducer.js","./actions":"../node_modules/redux-firestore/es/actions/index.js","./createFirestoreInstance":"../node_modules/redux-firestore/es/createFirestoreInstance.js","./constants":"../node_modules/redux-firestore/es/constants.js","./middleware":"../node_modules/redux-firestore/es/middleware.js","./utils/query":"../node_modules/redux-firestore/es/utils/query.js"}],"store.js":[function(require,module,exports) {
+},{"./enhancer":"../node_modules/redux-firestore/es/enhancer.js","./reducer":"../node_modules/redux-firestore/es/reducer.js","./actions":"../node_modules/redux-firestore/es/actions/index.js","./createFirestoreInstance":"../node_modules/redux-firestore/es/createFirestoreInstance.js","./constants":"../node_modules/redux-firestore/es/constants.js","./middleware":"../node_modules/redux-firestore/es/middleware.js","./utils/query":"../node_modules/redux-firestore/es/utils/query.js"}],"reducers/notifyReducer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var _default = function _default() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  if (action.type === "NOTIFY_USER") {
+    return _objectSpread({}, state, {
+      message: action.payload.message,
+      messageType: action.payload.messageType
+    });
+  }
+
+  return state;
+};
+
+exports.default = _default;
+},{}],"store.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -83987,6 +84016,8 @@ require("firebase/firestore");
 var _reactReduxFirebase = require("react-redux-firebase");
 
 var _reduxFirestore = require("redux-firestore");
+
+var _notifyReducer = _interopRequireDefault(require("./reducers/notifyReducer"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -84014,8 +84045,8 @@ _app.default.firestore();
 
 var rootReducer = (0, _redux.combineReducers)({
   firebase: _reactReduxFirebase.firebaseReducer,
-  firestore: _reduxFirestore.firestoreReducer // notify: notifyReducer,
-  // settings: settingsReducer
+  firestore: _reduxFirestore.firestoreReducer,
+  notify: _notifyReducer.default // settings: settingsReducer
 
 }); // Create initial state
 
@@ -84030,7 +84061,7 @@ var rrfProps = {
   createFirestoreInstance: _reduxFirestore.createFirestoreInstance
 };
 exports.rrfProps = rrfProps;
-},{"redux":"../node_modules/redux/es/redux.js","firebase/app":"../node_modules/firebase/app/dist/index.cjs.js","firebase/auth":"../node_modules/firebase/auth/dist/index.esm.js","firebase/firestore":"../node_modules/firebase/firestore/dist/index.esm.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","redux-firestore":"../node_modules/redux-firestore/es/index.js"}],"components/layout/AppNavBar.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","firebase/app":"../node_modules/firebase/app/dist/index.cjs.js","firebase/auth":"../node_modules/firebase/auth/dist/index.esm.js","firebase/firestore":"../node_modules/firebase/firestore/dist/index.esm.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","redux-firestore":"../node_modules/redux-firestore/es/index.js","./reducers/notifyReducer":"reducers/notifyReducer.js"}],"components/layout/AppNavBar.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85076,7 +85107,59 @@ var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(fun
 }))(EditClient);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../layout/Spinner":"components/layout/Spinner.js"}],"components/auth/Login.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../layout/Spinner":"components/layout/Spinner.js"}],"actionCreaters/notifyuser.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = function _default(message, messageType) {
+  return {
+    type: "NOTIFY_USER",
+    payload: {
+      message: message,
+      messageType: messageType
+    }
+  };
+};
+
+exports.default = _default;
+},{}],"components/layout/Alert.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Alert = function Alert(props) {
+  var message = props.message,
+      messageType = props.messageType;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _classnames.default)("alert", {
+      "alert-success": messageType === "success",
+      "alert-danger": messageType === "error"
+    })
+  }, message);
+};
+
+Alert.propTypes = {
+  message: _propTypes.default.string.isRequired,
+  messageType: _propTypes.default.string.isRequired
+};
+var _default = Alert;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","prop-types":"../node_modules/prop-types/index.js"}],"components/auth/Login.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -85093,6 +85176,10 @@ var _redux = require("redux");
 var _reactRedux = require("react-redux");
 
 var _reactReduxFirebase = require("react-redux-firebase");
+
+var _notifyuser = _interopRequireDefault(require("../../actionCreaters/notifyuser"));
+
+var _Alert = _interopRequireDefault(require("../layout/Alert"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -85124,8 +85211,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//import { notifyUser } from '../../actions/notifyActions';
-//import Alert from '../layout/Alert';
 var Login = /*#__PURE__*/function (_Component) {
   _inherits(Login, _Component);
 
@@ -85159,7 +85244,7 @@ var Login = /*#__PURE__*/function (_Component) {
         email: email,
         password: password
       }).catch(function (err) {
-        return alert("Invalid Login Credentials", "error");
+        return notifyUser("Invalid Login Credentials", "error");
       });
     });
 
@@ -85173,7 +85258,9 @@ var Login = /*#__PURE__*/function (_Component) {
   _createClass(Login, [{
     key: "render",
     value: function render() {
-      //const { message, messageType } = this.props.notify;
+      var _this$props$notify = this.props.notify,
+          message = _this$props$notify.message,
+          messageType = _this$props$notify.messageType;
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "row"
       }, /*#__PURE__*/_react.default.createElement("div", {
@@ -85182,7 +85269,10 @@ var Login = /*#__PURE__*/function (_Component) {
         className: "card"
       }, /*#__PURE__*/_react.default.createElement("div", {
         className: "card-body"
-      }, /*#__PURE__*/_react.default.createElement("h1", {
+      }, message ? /*#__PURE__*/_react.default.createElement(_Alert.default, {
+        message: message,
+        messageType: messageType
+      }) : null, /*#__PURE__*/_react.default.createElement("h1", {
         className: "text-center pb-4 pt-3"
       }, /*#__PURE__*/_react.default.createElement("span", {
         className: "text-primary"
@@ -85224,23 +85314,22 @@ var Login = /*#__PURE__*/function (_Component) {
 }(_react.Component);
 
 Login.propTypes = {
-  firebase: _propTypes.default.object.isRequired //   notify: PropTypes.object.isRequired,
-  //   notifyUser: PropTypes.func.isRequired
+  firebase: _propTypes.default.object.isRequired,
+  notify: _propTypes.default.object.isRequired,
+  notifyUser: _propTypes.default.func.isRequired
+};
 
-}; // export default compose(
-//   firebaseConnect(),
-//   connect(
-//     (state, props) => ({
-//       notify: state.notify
-//     }),
-//     { notifyUser }
-//   )
-// )(Login);
-
-var _default = (0, _reactReduxFirebase.firebaseConnect)()(Login);
+var _default = (0, _redux.compose)((0, _reactReduxFirebase.firebaseConnect)(), (0, _reactRedux.connect)(function (state, props) {
+  return {
+    notify: state.notify
+  };
+}, // ({ message, messageType }) => ({ message, messageType }),
+{
+  notifyUser: _notifyuser.default
+}))(Login);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js"}],"components/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js","../../actionCreaters/notifyuser":"actionCreaters/notifyuser.js","../layout/Alert":"components/layout/Alert.js"}],"components/index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -85330,7 +85419,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59054" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58670" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
