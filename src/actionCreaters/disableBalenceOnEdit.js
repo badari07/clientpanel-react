@@ -2,7 +2,7 @@ export default () => {
   const settings = JSON.parse(localStorage.getItem("settings"));
 
   // Toggle
-  settings.disableBalanceOnAdd = !settings.disableBalanceOnAdd;
+  settings.disableBalanceOnEdit = !settings.disableBalanceOnEdit;
 
   // Set back to localStorage
   localStorage.setItem("settings", JSON.stringify(settings));

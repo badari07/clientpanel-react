@@ -84579,7 +84579,7 @@ var AddClient = /*#__PURE__*/function (_Component) {
   _createClass(AddClient, [{
     key: "render",
     value: function render() {
-      //const { disableBalanceOnAdd } = this.props.settings;
+      var disableBalanceOnAdd = this.props.settings.disableBalanceOnAdd;
       return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "row"
       }, /*#__PURE__*/_react.default.createElement("div", {
@@ -84652,8 +84652,8 @@ var AddClient = /*#__PURE__*/function (_Component) {
         className: "form-control",
         name: "balance",
         onChange: this.onChange,
-        value: this.state.balance // disabled={disableBalanceOnAdd}
-
+        value: this.state.balance,
+        disabled: disableBalanceOnAdd
       })), /*#__PURE__*/_react.default.createElement("input", {
         type: "submit",
         value: "Submit",
@@ -84666,11 +84666,15 @@ var AddClient = /*#__PURE__*/function (_Component) {
 }(_react.Component);
 
 AddClient.propTypes = {
-  firestore: _propTypes.default.object.isRequired //settings: PropTypes.object.isRequired,
-
+  firestore: _propTypes.default.object.isRequired,
+  settings: _propTypes.default.object.isRequired
 };
 
-var _default = (0, _reactReduxFirebase.firestoreConnect)()(AddClient);
+var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(), (0, _reactRedux.connect)(function (state, props) {
+  return {
+    settings: state.settings
+  };
+}))(AddClient);
 
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","prop-types":"../node_modules/prop-types/index.js","redux":"../node_modules/redux/es/redux.js","react-redux":"../node_modules/react-redux/es/index.js","react-redux-firebase":"../node_modules/react-redux-firebase/es/index.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
@@ -85052,7 +85056,8 @@ var EditClient = /*#__PURE__*/function (_Component) {
   _createClass(EditClient, [{
     key: "render",
     value: function render() {
-      var client = this.props.client; //const { disableBalanceOnEdit } = this.props.settings;
+      var client = this.props.client;
+      var disableBalanceOnEdit = this.props.settings.disableBalanceOnEdit;
 
       if (client) {
         return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
@@ -85127,8 +85132,8 @@ var EditClient = /*#__PURE__*/function (_Component) {
           className: "form-control",
           name: "balance",
           ref: this.balanceInput,
-          defaultValue: client.balance //disabled={disableBalanceOnEdit}
-
+          defaultValue: client.balance,
+          disabled: disableBalanceOnEdit
         })), /*#__PURE__*/_react.default.createElement("input", {
           type: "submit",
           value: "Submit",
@@ -85158,8 +85163,8 @@ var _default = (0, _redux.compose)((0, _reactReduxFirebase.firestoreConnect)(fun
   var ordered = _ref.firestore.ordered,
       settings = _ref.settings;
   return {
-    client: ordered.client && ordered.client[0] // settings
-
+    client: ordered.client && ordered.client[0],
+    settings: settings
   };
 }))(EditClient);
 
@@ -85439,7 +85444,7 @@ exports.default = void 0;
 var _default = function _default() {
   var settings = JSON.parse(localStorage.getItem("settings")); // Toggle
 
-  settings.disableBalanceOnAdd = !settings.disableBalanceOnAdd; // Set back to localStorage
+  settings.disableBalanceOnEdit = !settings.disableBalanceOnEdit; // Set back to localStorage
 
   localStorage.setItem("settings", JSON.stringify(settings));
   return {
@@ -85700,7 +85705,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62366" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56676" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
